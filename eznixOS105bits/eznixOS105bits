@@ -1,0 +1,83 @@
+#!/bin/bash
+#
+# eznixOS105bits -- Revision: 105r1 -- by eznix (https://sourceforge.net/projects/eznixos/)
+# (GNU/General Public License version 3.0)
+#
+#--------------------------------
+# Set variables
+#--------------------------------
+# Set date format
+UDATE=$(date +%Y%m%d)
+#
+# Set working directory
+WKDIR="$(pwd)"
+#
+#--------------------------------
+# define functions
+#--------------------------------
+# Make project directory structure
+ezblddir () {
+mkdir -p $WKDIR/eznixOS105bits_$UDATE-1_all
+mkdir -p $WKDIR/eznixOS105bits_$UDATE-1_all/usr/local/bin
+mkdir -p $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105
+mkdir -p $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/doc/eznixOS105
+mkdir -p $WKDIR/eznixOS105bits_$UDATE-1_all/DEBIAN
+}
+#
+# Copy files into project directories
+ezcpfiles () {
+cp -r $WKDIR/eznix105/bootloaders $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/hooks $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/icons $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/launchers $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/livebuild $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/scripts $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/sources $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/eznixOS105bits $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/doc $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp -r $WKDIR/eznix105/splash $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp $WKDIR/eznix105/doc/* $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/doc/eznixOS105/
+cp $WKDIR/eznix105/eznixOS105bits/postinst $WKDIR/eznixOS105bits_$UDATE-1_all/DEBIAN/
+cp $WKDIR/eznix105/bldeznix105 $WKDIR/eznixOS105bits_$UDATE-1_all/usr/share/eznixOS105/eznix105/
+cp $WKDIR/eznix105/scripts/* $WKDIR/eznixOS105bits_$UDATE-1_all/usr/local/bin/
+}
+#
+# Create control file
+crtcontronl () {
+cat <<EOT >> $WKDIR/eznixOS105bits_$UDATE-1_all/DEBIAN/control
+Package: eznixOS105bits
+Version: $UDATE-1
+Section: base
+Essential: no
+Priority: optional
+Architecture: all
+Depends: live-build, curl, wget, apt-transport-https, dirmngr
+Maintainer: eznix <https://sourceforge.net/projects/eznixos/>
+Description: eznixOS105bits
+ Updated eznixOS105 documentation and scripts
+EOT
+}
+#
+#----------------------------
+# main program
+#----------------------------
+#
+ezblddir
+ezcpfiles
+crtcontronl
+# Build deb file
+dpkg-deb --build eznixOS105bits_$UDATE-1_all && md5sum eznixOS105bits_$UDATE-1_all.deb > eznixOS105bits_$UDATE-1_all.md5
+#
+# Disclaimer:
+#
+# THIS SOFTWARE IS PROVIDED BY EZNIX “AS IS” AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+# EVENT SHALL EZNIX BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+# BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
